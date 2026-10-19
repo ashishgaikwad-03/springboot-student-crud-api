@@ -1,5 +1,9 @@
 package com.example.crudSpringBootDemo.controller;
 
+import com.example.crudSpringBootDemo.dto.CreateStudentRequestDto;
+import com.example.crudSpringBootDemo.dto.CreateStudentResponseDto;
+import com.example.crudSpringBootDemo.dto.UpdateStudentRequestDto;
+import com.example.crudSpringBootDemo.dto.UpdateStudentResponseDto;
 import com.example.crudSpringBootDemo.entity.Student;
 import com.example.crudSpringBootDemo.service.StudentService;
 import jakarta.validation.Valid;
@@ -16,65 +20,56 @@ public class StudentController {
 
     private StudentService studentService;
 
-    public StudentController (StudentService studentService){
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Student> createStudent (@Valid @RequestBody Student student){
-        Student createdStudent = studentService.createStudent(student);
+    @PostMapping
+    public ResponseEntity<CreateStudentResponseDto> createStudent(
+            @Valid @RequestBody CreateStudentRequestDto studentRequestDto) {
+
+        CreateStudentResponseDto createdStudent =
+                studentService.createStudent(studentRequestDto);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdStudent);
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Student> getStudent (@RequestParam Long id){
-        Student studentResp = studentService.getStudent(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<CreateStudentResponseDto> getStudent(@PathVariable Long id) {
+        CreateStudentResponseDto studentResp = studentService.getStudent(id);
 
-        if(studentResp==null){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(studentResp);
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Student>> getAllStudent (){
-        List<Student> studentList = studentService.getAllStudent();
+    @GetMapping
+    public ResponseEntity<List<CreateStudentResponseDto>> getAllStudent() {
+        List<CreateStudentResponseDto> studentList = studentService.getAllStudent();
 
-        if(studentList.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(studentList);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Student> updateStudent (@RequestParam Long id,@Valid @RequestBody Student studentReq){
-        Student studentResp = studentService.updateStudent(id, studentReq);
+    @PutMapping
+    public ResponseEntity<UpdateStudentResponseDto> updateStudent(@RequestParam Long id,
+                                                                  @RequestBody UpdateStudentRequestDto studentReq) {
+        UpdateStudentResponseDto studentResp =
+                studentService.updateStudent(id, studentReq);
 
-        if(studentResp==null){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(studentResp);
     }
 
-    @DeleteMapping("/delete")
-        public ResponseEntity<String> deleteStudent(@RequestParam Long id){
-            Boolean isDeleted = studentService.deleteStudent(id);
+    @DeleteMapping
+    public ResponseEntity<String> deleteStudent(@RequestParam Long id) {
+        studentService.deleteStudent(id);
 
-            if(!isDeleted){
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok("Record Deleted");
+        return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/soft-deleted")
-    public ResponseEntity<String> deletedStudentSoftly(@RequestParam Long id){
-        Boolean isDeleted = studentService.deleteStudentSoftly(id);
+    @PatchMapping("/delete-soft")
+    public ResponseEntity<String> deleteStudentSoftly(@RequestParam Long id) {
+        studentService.deleteStudentSoftly(id);
 
-        if(!isDeleted){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok("Record Deleted");
+        return ResponseEntity.noContent().build();
     }
 }

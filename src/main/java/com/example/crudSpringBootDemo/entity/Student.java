@@ -7,33 +7,21 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import org.springframework.context.annotation.Primary;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @NotBlank(message = "Name cannot be empty or spaces")
-    @Size(min = 2, max = 50, message = "Name must be betweem 2 and 50 charcaters")
     private String name;
-
-    @NotNull(message = "Age cannot be left empty")
-    @Min(value = 18, message = "Must be atleast 18 years old")
-    @Max(value = 100, message = "Age cannot exceed 100")
     private int age;
-
-    @NotBlank(message = "Email address is mandatory")
-    @Email(message = "Please provide a valid email address")
     private String email;
-
-    @NotNull(message = "Roll number is mandatory")
-    @Positive(message = "Roll number must be valid positive number")
     private int rollNo;
-
-    @NotBlank(message = "Subject cannot be left blank")
     private String subject;
-
     private Boolean deleted;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public long getId() {
         return id;
@@ -89,5 +77,21 @@ public class Student {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
